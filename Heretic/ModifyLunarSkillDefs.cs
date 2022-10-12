@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace HereticMod
 {
@@ -147,11 +148,40 @@ namespace HereticMod
 
             On.RoR2.Skills.LunarDetonatorSkill.OnAssigned += (orig, self, skillSlot) =>
             {
-                //Debug.Log("SkillSlot: " + skillSlot.skillName);
+                if (skillSlot && skillSlot.characterBody && skillSlot.characterBody.skillLocator && skillSlot.characterBody.skillLocator.allSkills == null)
+                {
+                    skillSlot.characterBody.skillLocator.allSkills = skillSlot.characterBody.gameObject.GetComponents<GenericSkill>();
+                }
                 return orig(self, skillSlot);
             };
 
-            //TODO: RUIN DURATION
+            On.RoR2.GlobalEventManager.OnHitEnemy += ApplyRuin;
+        }
+
+        private static void ApplyRuin(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
+        {
+            orig(self, damageInfo, victim);
+            if (NetworkServer.active && !damageInfo.rejected && victim && damageInfo.procCoefficient > 0f)
+            {
+                if (damageInfo.attacker)
+                {
+                    CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
+                    if (attackerBody && attackerBody.bodyIndex == HereticPlugin.HereticBodyIndex)
+                    {
+                        CharacterBody victimBody = victim.GetComponent<CharacterBody>();
+                        if (victimBody)
+                        {
+                            if (!attackerBody.inventory || attackerBody.inventory.GetItemCount(RoR2Content.Items.LunarSpecialReplacement) <= 0)
+                            {
+                                if (Util.CheckRoll(100f * damageInfo.procCoefficient, attackerBody.master))
+                                {
+                                    victimBody.AddTimedBuff(RoR2Content.Buffs.LunarDetonationCharge, 10f);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -5,11 +5,8 @@ using R2API;
 using R2API.Utils;
 using RiskOfOptions;
 using RoR2;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
-using Zio.FileSystems;
 
 namespace HereticMod
 {
