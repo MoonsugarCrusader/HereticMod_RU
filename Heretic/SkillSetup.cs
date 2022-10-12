@@ -22,6 +22,8 @@ namespace HereticMod
             hereticSkills.passiveSkill.skillDescriptionToken = "MOFFEINHERETIC_PASSIVE_DESCRIPTION";
             hereticSkills.passiveSkill.icon = squawkSkill.icon;
 
+            FixGenericSkills(hereticSkills);
+
             SkillCatalog.skillsDefined.CallWhenAvailable(delegate
             {
                 Addressables.LoadAssetAsync<SkillFamily>("RoR2/Base/Heretic/HereticPrimaryFamily.asset").WaitForCompletion().variants[0].skillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("LunarPrimaryReplacement"));
@@ -29,6 +31,21 @@ namespace HereticMod
                 Addressables.LoadAssetAsync<SkillFamily>("RoR2/Base/Heretic/HereticUtilityFamily.asset").WaitForCompletion().variants[0].skillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("LunarUtilityReplacement"));
                 Addressables.LoadAssetAsync<SkillFamily>("RoR2/Base/Heretic/HereticSpecialFamily.asset").WaitForCompletion().variants[0].skillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("LunarDetonatorSpecialReplacement"));
             });
+        }
+
+        private static void FixGenericSkills(SkillLocator skillLocator)
+        {
+            SkillFamily utilityFamily = skillLocator.utility.skillFamily;
+            SkillFamily specialFamily = skillLocator.special.skillFamily;
+
+            GenericSkill slot3 = skillLocator.special;
+            GenericSkill slot4 = skillLocator.utility;
+
+            skillLocator.utility = slot3;
+            skillLocator.utility._skillFamily = utilityFamily;
+
+            skillLocator.special = slot4;
+            skillLocator.special._skillFamily = specialFamily;
         }
     }
 }

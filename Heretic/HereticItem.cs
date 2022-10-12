@@ -20,9 +20,10 @@ namespace HereticMod
             HereticStatBonusItem.name = "MoffeinHereticStatBonusItem";
             HereticStatBonusItem.deprecatedTier = ItemTier.NoTier;
             HereticStatBonusItem.descriptionToken = "MOFFEINHERETIC_STATBONUSITEM_DESC";
-            HereticStatBonusItem.nameToken = "MOFFEINHERETIC_STATBONUSITEM_DESC";
+            HereticStatBonusItem.nameToken = "MOFFEINHERETIC_STATBONUSITEM_NAME";
             HereticStatBonusItem.pickupToken = "MOFFEINHERETIC_STATBONUSITEM_PICKUP";
             HereticStatBonusItem.hidden = false;
+            //HereticStatBonusItem.pickupIconSprite = ; //TODO: ICON
             HereticStatBonusItem.tags = new[]
             {
                 ItemTag.WorldUnique,
@@ -55,6 +56,10 @@ namespace HereticMod
 
         private static void GiveHereticItem(On.RoR2.CharacterMaster.orig_OnInventoryChanged orig, CharacterMaster self)
         {
+            bool isHeretic = false;
+            CharacterBody cb = self.GetBody();
+            if (cb && cb.bodyIndex == HereticPlugin.HereticBodyIndex) isHeretic = true;
+
             orig(self);
 
             if (NetworkServer.active
@@ -66,6 +71,11 @@ namespace HereticMod
                 && self.inventory.GetItemCount(HereticItem.HereticStatBonusItem) <= 0)
             {
                 self.inventory.GiveItem(HereticItem.HereticStatBonusItem);
+
+                if (isHeretic)
+                {
+                    EffectManager.SimpleEffect(EntityStates.Heretic.SpawnState.effectPrefab, cb.corePosition, Quaternion.identity, true);
+                }
             }
         }
     }

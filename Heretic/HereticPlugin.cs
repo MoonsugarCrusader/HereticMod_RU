@@ -42,7 +42,7 @@ namespace HereticMod
             ModifySurvivorDef();
             ModifyLunarSkillDefs.Init();
             SkillSetup.Init();
-            Squawk.Init();
+            SquawkController.Init();
 
             HereticItem.Init();
 
