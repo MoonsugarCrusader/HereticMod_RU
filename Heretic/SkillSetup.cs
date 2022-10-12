@@ -27,9 +27,20 @@ namespace HereticMod
             SkillCatalog.skillsDefined.CallWhenAvailable(delegate
             {
                 Addressables.LoadAssetAsync<SkillFamily>("RoR2/Base/Heretic/HereticPrimaryFamily.asset").WaitForCompletion().variants[0].skillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("LunarPrimaryReplacement"));
-                Addressables.LoadAssetAsync<SkillFamily>("RoR2/Base/Heretic/HereticSecondaryFamily.asset").WaitForCompletion().variants[0].skillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("LunarSecondaryReplacement"));
+
+                SkillDef lunarSecondary = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("LunarSecondaryReplacement"));
+                Addressables.LoadAssetAsync<SkillFamily>("RoR2/Base/Heretic/HereticSecondaryFamily.asset").WaitForCompletion().variants[0].skillDef = lunarSecondary;
+
                 Addressables.LoadAssetAsync<SkillFamily>("RoR2/Base/Heretic/HereticUtilityFamily.asset").WaitForCompletion().variants[0].skillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("LunarUtilityReplacement"));
-                Addressables.LoadAssetAsync<SkillFamily>("RoR2/Base/Heretic/HereticSpecialFamily.asset").WaitForCompletion().variants[0].skillDef = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("LunarDetonatorSpecialReplacement"));
+
+                SkillDef lunarSpecial = SkillCatalog.GetSkillDef(SkillCatalog.FindSkillIndexByName("LunarDetonatorSpecialReplacement"));
+                Addressables.LoadAssetAsync<SkillFamily>("RoR2/Base/Heretic/HereticSpecialFamily.asset").WaitForCompletion().variants[0].skillDef = lunarSpecial;
+
+                if (HereticPlugin.fixTypos)
+                {
+                    lunarSecondary.skillDescriptionToken = "MOFFEINHERETIC_SKILL_LUNAR_SECONDARY_REPLACEMENT_DESCRIPTION";
+                    lunarSpecial.skillDescriptionToken = "MOFFEINHERETIC_SKILL_LUNAR_SPECIAL_REPLACEMENT_DESCRIPTION";
+                }
             });
         }
 
