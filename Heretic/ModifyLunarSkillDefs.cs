@@ -1,0 +1,157 @@
+﻿using HereticMod.Components;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using RoR2;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
+
+namespace HereticMod
+{
+    //This modifies the Lunar Skills to function properly at 0 stacks of their corresponding item.
+    public class ModifyLunarSkillDefs
+    {
+        private static bool initialized = false;
+
+        public static void Init()
+        {
+            if (initialized) return;
+            initialized = true;
+            
+            //SKILLSLOT.CHARACTERBODY.INVENTORY NEEDS TO BE NULLCHECKED
+            SetupPrimary();
+            SetupSecondary();
+            SetupUtility();
+            SetupSpecial();
+        }
+
+        private static void SetupPrimary()
+        {
+            //Replace the vanilla cooldown with a reload system.
+            if (HereticPlugin.visionsAttackSpeed)
+            {
+                On.EntityStates.GlobalSkills.LunarNeedle.FireLunarNeedle.OnEnter += (orig, self) =>
+                {
+                    orig(self);
+
+                    VisionsReloader visRel = self.GetComponent<VisionsReloader>();
+                    if (visRel) visRel.FireSkill();
+                };
+                HereticPlugin.HereticBodyObject.AddComponent<VisionsReloader>();
+                RoR2.CharacterBody.onBodyInventoryChangedGlobal += AddVisionsReloader;
+
+                On.RoR2.Skills.LunarPrimaryReplacementSkill.GetRechargeInterval += (orig, self, skillSlot) =>
+                {
+                    return 0f;
+                };
+
+                On.RoR2.Skills.LunarPrimaryReplacementSkill.GetRechargeStock += (orig, self, skillSlot) =>
+                {
+                    return 0;
+                };
+            }
+            else //At 0 stacks of the item, behave like there is 1 stack.
+            {
+                On.RoR2.Skills.LunarPrimaryReplacementSkill.GetRechargeInterval += (orig, self, skillSlot) =>
+                {
+                    float interval = self.baseRechargeInterval;
+                    if (skillSlot && skillSlot.characterBody && skillSlot.characterBody.inventory)
+                    {
+                        interval = Mathf.Max(orig(self, skillSlot), interval);
+                    }
+                    return interval;
+                };
+            }
+
+            On.RoR2.Skills.LunarPrimaryReplacementSkill.GetMaxStock += (orig, self, skillSlot) =>
+            {
+                int maxStock = self.baseMaxStock;
+                if (skillSlot && skillSlot.characterBody && skillSlot.characterBody.inventory)
+                {
+                    maxStock = Math.Max(orig(self, skillSlot), maxStock);
+                }
+                return maxStock;
+            };
+        }
+
+        private static void AddVisionsReloader(CharacterBody body)
+        {
+            if (body.bodyIndex != HereticPlugin.HereticBodyIndex && body.inventory && body.inventory.GetItemCount(RoR2Content.Items.LunarPrimaryReplacement.itemIndex) > 0)
+            {
+                VisionsReloader visRel = body.GetComponent<VisionsReloader>();
+                if (!visRel) body.gameObject.AddComponent<VisionsReloader>();
+            }
+        }
+
+        private static void SetupSecondary()
+        {
+            On.RoR2.Skills.LunarSecondaryReplacementSkill.GetRechargeInterval += (orig, self, skillSlot) =>
+            {
+                float interval = self.baseRechargeInterval;
+                if (skillSlot && skillSlot.characterBody && skillSlot.characterBody.inventory)
+                {
+                    interval = Mathf.Max(orig(self, skillSlot), interval);
+                }
+                return interval;
+            };
+
+            IL.RoR2.GlobalEventManager.OnHitEnemy += (il) =>
+            {
+                ILCursor c = new ILCursor(il);
+                c.GotoNext(MoveType.After,
+                         x => x.MatchLdsfld(typeof(RoR2.RoR2Content.Items), "LunarSecondaryReplacement"),
+                         x => x.MatchCallvirt<RoR2.Inventory>("GetItemCount")
+                         );
+                c.EmitDelegate<Func<int, int>>(itemCount =>
+                {
+                    if (itemCount <= 0)
+                    {
+                        itemCount = 1;
+                    }
+
+                    return itemCount;
+                });
+            };
+        }
+
+        private static void SetupUtility()
+        {
+            IL.EntityStates.GhostUtilitySkillState.OnEnter += (il) =>
+            {
+                ILCursor c = new ILCursor(il);
+                c.GotoNext(MoveType.After,
+                         x => x.MatchLdsfld(typeof(RoR2.RoR2Content.Items), "LunarUtilityReplacement"),
+                         x => x.MatchCallvirt<RoR2.Inventory>("GetItemCount")
+                         );
+                c.EmitDelegate<Func<int, int>>(itemCount =>
+               {
+                   if (itemCount <= 0) itemCount = 1;
+                   return itemCount;
+               });
+            };
+        }
+
+        //FIND OUT WHY THIS NULLREFS
+        private static void SetupSpecial()
+        {
+            On.RoR2.Skills.LunarDetonatorSkill.GetRechargeInterval += (orig, self, skillSlot) =>
+            {
+                float interval = self.baseRechargeInterval;
+                if (skillSlot && skillSlot.characterBody && skillSlot.characterBody.inventory)
+                {
+                    interval = Mathf.Max(orig(self, skillSlot), interval);
+                }
+                return interval;
+            };
+
+            On.RoR2.Skills.LunarDetonatorSkill.OnAssigned += (orig, self, skillSlot) =>
+            {
+                //Debug.Log("SkillSlot: " + skillSlot.skillName);
+                return orig(self, skillSlot);
+            };
+
+            //TODO: RUIN DURATION
+        }
+    }
+}
