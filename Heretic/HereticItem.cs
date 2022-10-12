@@ -43,7 +43,10 @@ namespace HereticMod
                     {
                         float adjustedLevel = sender.level - 1f;
                         args.baseRegenAdd -= sender.baseRegen + sender.levelRegen * adjustedLevel;//Negate base regen.
-                        args.baseRegenAdd -= (6f + 1.2f * adjustedLevel) * (sender.HasBuff(RoR2Content.Buffs.TonicBuff) ? 0.3333333333f : 1f);//Set negative health regen. Lower the health degeneration while Tonic is active due to the regen multiplier.
+                        args.baseRegenAdd -= (6f + 1.2f * adjustedLevel) * (sender.HasBuff(RoR2Content.Buffs.TonicBuff) ? 0.25f : 1f);//Set negative health regen. Lower the health degeneration while Tonic is active due to the regen multiplier.
+
+                        if (sender.inventory.GetItemCount(RoR2Content.Items.MonsoonPlayerHelper) > 0) args.regenMultAdd += 0.4f;
+                        if (sender.inventory.GetItemCount(RoR2Content.Items.DrizzlePlayerHelper) > 0) args.regenMultAdd -= 0.5f;
                     }
 
                     args.healthMultAdd += 3f;
