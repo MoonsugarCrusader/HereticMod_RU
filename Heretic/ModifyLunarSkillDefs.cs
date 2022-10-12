@@ -133,7 +133,7 @@ namespace HereticMod
             };
         }
 
-        //FIND OUT WHY THIS NULLREFS
+        //Spaghetti code
         private static void SetupSpecial()
         {
             On.RoR2.Skills.LunarDetonatorSkill.GetRechargeInterval += (orig, self, skillSlot) =>
@@ -146,19 +146,28 @@ namespace HereticMod
                 return interval;
             };
 
+            //Incredibly jank.
             On.RoR2.Skills.LunarDetonatorSkill.OnAssigned += (orig, self, skillSlot) =>
             {
                 if (skillSlot && skillSlot.characterBody && skillSlot.characterBody.skillLocator && skillSlot.characterBody.skillLocator.allSkills == null)
                 {
-                    skillSlot.characterBody.skillLocator.allSkills = skillSlot.characterBody.gameObject.GetComponents<GenericSkill>();
+                    AssignLunarDetonator ald = skillSlot.characterBody.gameObject.GetComponent<AssignLunarDetonator>();
+                    if (!ald) ald = skillSlot.characterBody.gameObject.AddComponent<AssignLunarDetonator>();
+                    ald.cb = skillSlot.characterBody;
+                    ald.skill = self;
+                    ald.skillSlot = skillSlot;
+                    return null;
                 }
-                return orig(self, skillSlot);
+                else
+                {
+                    return orig(self, skillSlot);
+                }
             };
 
-            On.RoR2.GlobalEventManager.OnHitEnemy += ApplyRuin;
+            //On.RoR2.GlobalEventManager.OnHitEnemy += ApplyRuin;
         }
 
-        private static void ApplyRuin(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
+        /*private static void ApplyRuin(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
         {
             orig(self, damageInfo, victim);
             if (NetworkServer.active && !damageInfo.rejected && victim && damageInfo.procCoefficient > 0f)
@@ -168,13 +177,14 @@ namespace HereticMod
                     CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
                     if (attackerBody && attackerBody.bodyIndex == HereticPlugin.HereticBodyIndex)
                     {
-                        CharacterBody victimBody = victim.GetComponent<CharacterBody>();
-                        if (victimBody)
+                        if ((!attackerBody.inventory || attackerBody.inventory.GetItemCount(RoR2Content.Items.LunarSpecialReplacement) <= 0) && attackerBody.skillLocator && attackerBody.skillLocator.special.skillDef == CharacterBody.CommonAssets.lunarSpecialReplacementSkillDef)
                         {
-                            if (!attackerBody.inventory || attackerBody.inventory.GetItemCount(RoR2Content.Items.LunarSpecialReplacement) <= 0)
+                            CharacterBody victimBody = victim.GetComponent<CharacterBody>();
+                            if (victimBody)
                             {
                                 if (Util.CheckRoll(100f * damageInfo.procCoefficient, attackerBody.master))
                                 {
+                                    Debug.Log("Override code");
                                     victimBody.AddTimedBuff(RoR2Content.Buffs.LunarDetonationCharge, 10f);
                                 }
                             }
@@ -182,6 +192,6 @@ namespace HereticMod
                     }
                 }
             }
-        }
+        }*/
     }
 }
