@@ -47,7 +47,6 @@ namespace HereticMod.Components
                     reloadStopwatch -= Time.fixedDeltaTime;
                     if (reloadStopwatch <= 0f)
                     {
-                        reloadStopwatch += baseDuration / body.attackSpeed * GetStackMult();
                         skills.primary.stock = skills.primary.maxStock;
                     }
                 }
@@ -71,7 +70,7 @@ namespace HereticMod.Components
         public void FireSkill()
         {
             delayStopwatch = graceDuration;  //Duration is already scaled to attack speed. InitialDelay is simply for inputs, and is ignored if the mag is empty.
-            reloadStopwatch = baseDuration / body.attackSpeed;// + (skills.primary.stock <= 0 ? duration : 0f);
+            reloadStopwatch = (baseDuration / body.attackSpeed) * GetStackMult(); ;// + (skills.primary.stock <= 0 ? duration : 0f);
         }
     }
 }
