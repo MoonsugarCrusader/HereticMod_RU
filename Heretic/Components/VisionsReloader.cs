@@ -53,7 +53,7 @@ namespace HereticMod.Components
             }
             else
             {
-                reloadStopwatch = baseDuration / body.attackSpeed;
+                reloadStopwatch = (baseDuration / body.attackSpeed) * GetStackMult();
             }
         }
 
