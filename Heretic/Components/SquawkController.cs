@@ -5,7 +5,7 @@ using BepInEx.Configuration;
 
 namespace HereticMod.Components
 {
-    public class SquawkController : MonoBehaviour
+    public class SquawkController : NetworkBehaviour
     {
         private static bool initialized = false;
         public static void Init()
@@ -14,12 +14,14 @@ namespace HereticMod.Components
             initialized = true;
 
             HereticPlugin.HereticBodyObject.AddComponent<SquawkController>();
-            SquawkController.squawk = ScriptableObject.CreateInstance<NetworkSoundEventDef>();
+
+            //Need NetworkBehavior because SimpleSoundEffect doesnt seem to be able to be parented to a GameObject, which ends up sounding weird when in motion.
+            /*SquawkController.squawk = ScriptableObject.CreateInstance<NetworkSoundEventDef>();
             SquawkController.squawk.eventName = "Play_heretic_squawk";
-            R2API.ContentAddition.AddNetworkSoundEventDef(SquawkController.squawk);
+            R2API.ContentAddition.AddNetworkSoundEventDef(SquawkController.squawk);*/
         }
 
-        public static float baseCooldown = 0.25f;
+        public static float baseCooldown = 0.3f;
         public static NetworkSoundEventDef squawk;
         private bool wasPressed = false;
         private float cooldownStopwatch = 0f;
@@ -40,7 +42,7 @@ namespace HereticMod.Components
 
         public void FixedUpdate()
         {
-            if (Util.HasEffectiveAuthority(this.gameObject))
+            if (this.hasAuthority)
             {
                 if (cooldownStopwatch <= 0f)
                 {
@@ -48,7 +50,9 @@ namespace HereticMod.Components
                     {
                         if (!wasPressed)
                         {
-                            EffectManager.SimpleSoundEffect(SquawkController.squawk.index, base.transform.position, true);
+                            //EffectManager.SimpleSoundEffect(SquawkController.squawk.index, base.transform.position, true);
+                            Util.PlaySound("Play_heretic_squawk", base.gameObject);
+                            CmdSquawk();
                         }
                         wasPressed = true;
                     }
@@ -61,6 +65,21 @@ namespace HereticMod.Components
                 {
                     cooldownStopwatch -= Time.fixedDeltaTime;
                 }
+            }
+        }
+
+        [Command]
+        public void CmdSquawk()
+        {
+            RpcSquawk();
+        }
+
+        [ClientRpc]
+        private void RpcSquawk()
+        {
+            if (!this.hasAuthority)
+            {
+                Util.PlaySound("Play_heretic_squawk", base.gameObject);
             }
         }
     }
