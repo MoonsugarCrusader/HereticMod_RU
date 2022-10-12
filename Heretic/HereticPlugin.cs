@@ -19,6 +19,7 @@ namespace HereticMod
     {
         public static bool visionsAttackSpeed = true;
         public static bool giveHereticItem = true;
+        public static float sortPosition = 17f;
         public static ConfigEntry<KeyboardShortcut> squawkButton;
 
         public static PluginInfo pluginInfo;
@@ -86,7 +87,7 @@ namespace HereticMod
             HereticSurvivorDef.displayPrefab = HereticDisplayPrefab;
             HereticDisplayPrefab.AddComponent<MenuAnimComponent>();
 
-            HereticSurvivorDef.desiredSortPosition = 15f;
+            HereticSurvivorDef.desiredSortPosition = sortPosition;
 
             //Hopefully hooking this will make it work in MP
             On.RoR2.SurvivorMannequins.SurvivorMannequinSlotController.RebuildMannequinInstance += (orig, self) =>
@@ -102,6 +103,9 @@ namespace HereticMod
 
         private void ReadConfig()
         {
+            HereticPlugin.visionsAttackSpeed = Config.Bind("Gameplay", "Visions of Heresy Attack Speed", true, "Reload speed of Visions of Heresy scales with Attack Speed instead of Cooldown.").Value;
+            HereticPlugin.giveHereticItem = Config.Bind("Gameplay", "Enable Mark of Heresy", true, "Collecting all 4 Heresy items gives you the Mark of Heresy.").Value;
+
             HereticPlugin.squawkButton = Config.Bind("General", "Squawk Button", KeyboardShortcut.Empty, "Press this button to squawk.");
             ModSettingsManager.AddOption(new RiskOfOptions.Options.KeyBindOption(HereticPlugin.squawkButton));
         }

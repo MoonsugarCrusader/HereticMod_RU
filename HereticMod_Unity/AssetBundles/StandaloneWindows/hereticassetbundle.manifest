@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 2428559175
+CRC: 1241383119
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 23487ec6949bfab8d63c20f5157b1aea
+    Hash: 34ed882ad4ae990a1dfead651863dedc
   TypeTreeHash:
     serializedVersion: 2
     Hash: c90fc19e2679e5295d10bd00f33cb4c3
@@ -15,5 +15,6 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
+- Assets/Resources/Sprites/texHeresyItemIcon.png
 - Assets/Resources/Sprites/texHereticSkinDefault.png
 Dependencies: []

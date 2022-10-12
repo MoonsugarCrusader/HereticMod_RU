@@ -23,7 +23,7 @@ namespace HereticMod
             HereticStatBonusItem.nameToken = "MOFFEINHERETIC_STATBONUSITEM_NAME";
             HereticStatBonusItem.pickupToken = "MOFFEINHERETIC_STATBONUSITEM_PICKUP";
             HereticStatBonusItem.hidden = false;
-            //HereticStatBonusItem.pickupIconSprite = ; //TODO: ICON
+            HereticStatBonusItem.pickupIconSprite = Assets.assetBundle.LoadAsset<Sprite>("texHeresyItemIcon");
             HereticStatBonusItem.tags = new[]
             {
                 ItemTag.WorldUnique,
