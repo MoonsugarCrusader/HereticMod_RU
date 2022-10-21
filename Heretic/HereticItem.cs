@@ -66,7 +66,11 @@ namespace HereticMod
                     {
                         if (self.body.inventory && self.body.inventory.GetItemCount(HereticItem.HereticStatBonusItem) > 0)
                         {
-                            regenAccumulator -= Time.fixedDeltaTime * (6f + 1.2f * (self.body.level - 1f));
+                            bool shieldOnly = self.body.HasBuff(RoR2Content.Buffs.AffixLunar) || self.body.inventory.GetItemCount(RoR2Content.Items.ShieldOnly) > 0;
+                            if (!shieldOnly)
+                            {
+                                regenAccumulator -= Time.fixedDeltaTime * (6f + 1.2f * (self.body.level - 1f));
+                            }
                         }
                         return regenAccumulator;
                     });
