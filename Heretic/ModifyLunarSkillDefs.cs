@@ -164,6 +164,15 @@ namespace HereticMod
                 }
             };
 
+            //Fixes a nullref that sometimes shows up.
+            On.RoR2.Skills.LunarDetonatorSkill.OnUnassigned += (orig, self, skillSlot) =>
+            {
+                if (skillSlot && (RoR2.Skills.LunarDetonatorSkill.InstanceData)skillSlot.skillInstanceData != null)
+                {
+                    orig(self, skillSlot);
+                }
+            };
+
             //On.RoR2.GlobalEventManager.OnHitEnemy += ApplyRuin;
         }
 
