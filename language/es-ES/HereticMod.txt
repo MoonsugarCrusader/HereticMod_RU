@@ -8,7 +8,7 @@
 		"MOFFEINHERETIC_SKILL_LUNAR_SECONDARY_REPLACEMENT_DESCRIPTION" : "Carga una esfera de cuchillas que inflige un <style=cIsDamage>175 % de daño</style>  repetidamente. Tras un tiempo, explota y <style=cIsDamage>enraíza</style> a todos los enemigos, infligiendo un <style=cIsDamage>700 % de daño</style> .",
 		"MOFFEINHERETIC_SKILL_LUNAR_SPECIAL_REPLACEMENT_DESCRIPTION" : "Infligir daño añade una acumulación de <style=cIsDamage>Ruina</style>. Activar la habilidad <style=cIsDamage>detona todas las acumulaciones de Ruina</style> en un alcance ilimitado, infligiendo un <style=cIsDamage>300 % de daño</style> más un <style=cIsDamage>120 % de daño</style> por cada acumulación de ruina.",
 		
-		"ACHIEVEMENT_MOFFEINHERETICUNLOCK_NAME" : "Resurrección poco Ortodoxa",
-		"ACHIEVEMENT_MOFFEINHERETICUNLOCK_DESCRIPTION" : "Escape the moon as the secret survivor."
+		"ACHIEVEMENT_MOFFEINHERETICUNLOCK_NAME" : "Resurreción poco ortodoxa",
+		"ACHIEVEMENT_MOFFEINHERETICUNLOCK_DESCRIPTION" : "Escapa de la luna como el superviviente secreto."
 	}
 }

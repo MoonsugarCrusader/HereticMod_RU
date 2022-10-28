@@ -32,12 +32,12 @@ namespace HereticMod
 
         public void Awake()
         {
+            HereticBodyObject = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Heretic/HereticBody.prefab").WaitForCompletion();
             ReadConfig();
 
             pluginInfo = Info;
             Assets.Init();
             Tokens.Init();
-            HereticBodyObject = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Heretic/HereticBody.prefab").WaitForCompletion();
 
             Skins.InitSkins(HereticBodyObject);
             ModifyStats(HereticBodyObject.GetComponent<CharacterBody>());
@@ -87,7 +87,7 @@ namespace HereticMod
             UnlockableDef hereticUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
             hereticUnlock.cachedName = "Survivors.MoffeinHeretic";
             hereticUnlock.nameToken = "ACHIEVEMENT_MOFFEINHERETIC_UNLOCK_NAME";
-            hereticUnlock.achievementIcon = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Heretic/texHereticIcon.png").WaitForCompletion();
+            hereticUnlock.achievementIcon = Assets.assetBundle.LoadAsset<Sprite>("texHereticIcon");
             ContentAddition.AddUnlockableDef(hereticUnlock);
 
             if (!HereticPlugin.forceUnlock)
@@ -116,10 +116,11 @@ namespace HereticMod
 
         private void ReadConfig()
         {
+            HereticPlugin.forceUnlock = Config.Bind("Unlock", "Force Unlock", false, "Unlocks Heretic by default.").Value;
+
             HereticPlugin.visionsAttackSpeed = Config.Bind("Gameplay", "Visions of Heresy Attack Speed", true, "Reload speed of Visions of Heresy scales with Attack Speed instead of Cooldown.").Value;
             HereticPlugin.giveHereticItem = Config.Bind("Gameplay", "Enable Mark of Heresy", true, "Collecting all 4 Heresy items gives you the Mark of Heresy.").Value;
 
-            HereticPlugin.forceUnlock = Config.Bind("General", "Force Unlock", false, "Unlocks Heretic by default.").Value;
             HereticPlugin.fixTypos = Config.Bind("General", "Fix Skill Descriptions", true, "Fixes a typo with Hooks of Heresy and adds color-coding to Essence of Heresy.").Value;
             HereticPlugin.sortPosition = Config.Bind("General", "Character Select Sort Position", 17f, "Determines which spot this survivor will take in the Character Select menu.").Value;    //set to 14 to go after captain
             HereticPlugin.squawkButton = Config.Bind("General", "Squawk Button", KeyboardShortcut.Empty, "Press this button to squawk.");
