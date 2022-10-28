@@ -12,7 +12,7 @@ namespace HereticMod
 {
     [BepInDependency("com.rune580.riskofoptions")]
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.Moffein.Heretic", "Heretic", "1.0.7")]
+    [BepInPlugin("com.Moffein.Heretic", "Heretic", "1.1.0")]
     [R2API.Utils.R2APISubmoduleDependency(nameof(RecalculateStatsAPI), nameof(ContentAddition), nameof(ItemAPI), nameof(PrefabAPI), nameof(LoadoutAPI))]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
     public class HereticPlugin : BaseUnityPlugin
@@ -22,6 +22,7 @@ namespace HereticMod
         public static bool giveHereticItem = true;
         public static float sortPosition = 17f;
         public static ConfigEntry<KeyboardShortcut> squawkButton;
+        public static bool forceUnlock;
 
         public static PluginInfo pluginInfo;
 
@@ -83,6 +84,17 @@ namespace HereticMod
             HereticSurvivorDef = Addressables.LoadAssetAsync<SurvivorDef>("RoR2/Base/Heretic/Heretic.asset").WaitForCompletion();
             HereticSurvivorDef.hidden = false;
 
+            UnlockableDef hereticUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
+            hereticUnlock.cachedName = "Survivors.MoffeinHeretic";
+            hereticUnlock.nameToken = "ACHIEVEMENT_MOFFEINHERETIC_UNLOCK_NAME";
+            hereticUnlock.achievementIcon = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Heretic/texHereticIcon.png").WaitForCompletion();
+            ContentAddition.AddUnlockableDef(hereticUnlock);
+
+            if (!HereticPlugin.forceUnlock)
+            {
+                HereticSurvivorDef.unlockableDef = hereticUnlock;
+            }
+
             GameObject HereticDisplayPrefab = HereticBodyObject.GetComponent<ModelLocator>().modelTransform.gameObject.InstantiateClone("MoffeinHereticDisplay", false);
             HereticDisplayPrefab.transform.localScale *= 0.6f;
             HereticSurvivorDef.displayPrefab = HereticDisplayPrefab;
@@ -107,8 +119,9 @@ namespace HereticMod
             HereticPlugin.visionsAttackSpeed = Config.Bind("Gameplay", "Visions of Heresy Attack Speed", true, "Reload speed of Visions of Heresy scales with Attack Speed instead of Cooldown.").Value;
             HereticPlugin.giveHereticItem = Config.Bind("Gameplay", "Enable Mark of Heresy", true, "Collecting all 4 Heresy items gives you the Mark of Heresy.").Value;
 
+            HereticPlugin.forceUnlock = Config.Bind("General", "Force Unlock", false, "Unlocks Heretic by default.").Value;
             HereticPlugin.fixTypos = Config.Bind("General", "Fix Skill Descriptions", true, "Fixes a typo with Hooks of Heresy and adds color-coding to Essence of Heresy.").Value;
-            HereticPlugin.sortPosition = Config.Bind("General", "Character Select Sort Position", 17f, "Determines which spot this survivor will take in the Character Select menu.").Value;
+            HereticPlugin.sortPosition = Config.Bind("General", "Character Select Sort Position", 17f, "Determines which spot this survivor will take in the Character Select menu.").Value;    //set to 14 to go after captain
             HereticPlugin.squawkButton = Config.Bind("General", "Squawk Button", KeyboardShortcut.Empty, "Press this button to squawk.");
             ModSettingsManager.AddOption(new RiskOfOptions.Options.KeyBindOption(HereticPlugin.squawkButton));
         }
