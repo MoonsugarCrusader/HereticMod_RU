@@ -87,7 +87,7 @@ namespace HereticMod
             UnlockableDef hereticUnlock = ScriptableObject.CreateInstance<UnlockableDef>();
             hereticUnlock.cachedName = "Survivors.MoffeinHeretic";
             hereticUnlock.nameToken = "ACHIEVEMENT_MOFFEINHERETIC_UNLOCK_NAME";
-            hereticUnlock.achievementIcon = Assets.assetBundle.LoadAsset<Sprite>("texHereticIcon");
+            hereticUnlock.achievementIcon = Assets.assetBundle.LoadAsset<Sprite>("texHereticUnlock.png");
             ContentAddition.AddUnlockableDef(hereticUnlock);
 
             if (!HereticPlugin.forceUnlock)
