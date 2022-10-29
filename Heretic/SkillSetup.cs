@@ -2,6 +2,7 @@
 using RoR2.Skills;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Networking;
 
 namespace HereticMod
 {
@@ -41,6 +42,16 @@ namespace HereticMod
                     lunarSecondary.skillDescriptionToken = "MOFFEINHERETIC_SKILL_LUNAR_SECONDARY_REPLACEMENT_DESCRIPTION";
                     lunarSpecial.skillDescriptionToken = "MOFFEINHERETIC_SKILL_LUNAR_SPECIAL_REPLACEMENT_DESCRIPTION";
                 }
+
+
+                On.EntityStates.Heretic.SpawnState.OnEnter += (orig, self) =>
+                {
+                    orig(self);
+                    if (NetworkServer.active && self.characterBody)
+                    {
+                        self.characterBody.AddTimedBuff(RoR2Content.Buffs.HiddenInvincibility, EntityStates.Heretic.SpawnState.duration + 0.5f);
+                    }
+                };
             });
         }
 
