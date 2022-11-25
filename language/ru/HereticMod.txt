@@ -1,1 +1,14 @@
-
+{
+	strings:
+	{
+		"MOFFEINHERETIC_PASSIVE_DESCRIPTION" : "Еретик <style=cIsUtility>двигается быстрее</style> и может <style=cIsUtility>дважды взмахнуть крыльями</style> для увеличения высоты в полете.",
+		"MOFFEINHERETIC_STATBONUSITEM_NAME" : "Метка ереси",
+		"MOFFEINHERETIC_STATBONUSITEM_PICKUP" : "Получите значительный прирост характеристик... <color=#FF7F7F>НО ваше здоровье снижается со временем.</color>",
+		"MOFFEINHERETIC_STATBONUSITEM_DESC" : "Увеличивает <style=cIsHealing>здоровье</style> на <style=cIsHealing>400%</style> и <style=cIsDamage>урон</style> на <style=cIsDamage>50%</style>. Снижает <style=cIsHealing>базовую регенерацию здоровья</style> до <style=cIsHealing>-6зд/с</style>.",
+		"MOFFEINHERETIC_SKILL_LUNAR_SECONDARY_REPLACEMENT_DESCRIPTION" : "Зарядите снаряд, который неоднократно наносит <style=cIsDamage>175% урона</style>. После задержки взрывается и <style=cIsDamage>сковывает</style> всех противников, нанося <style=cIsDamage>700% урона</style>.",
+		"MOFFEINHERETIC_SKILL_LUNAR_SPECIAL_REPLACEMENT_DESCRIPTION" : "При нанесении урона накладывает эффект <style=cIsDamage>опустошения</style>. Активация навыка <style=cIsDamage>взрывает все эффекты опустошения</style> на неограниченном расстоянии, нанося <style=cIsDamage>300% урона</style> и <style=cIsDamage>120% урона</style> за каждый эффект <style=cIsDamage>опустошения</style>.",
+		
+		"ACHIEVEMENT_MOFFEINHERETICUNLOCK_NAME" : "Воскрешенная ересь",
+		"ACHIEVEMENT_MOFFEINHERETICUNLOCK_DESCRIPTION" : "Покиньте луну в качестве секретного выжившего."
+	}
+}
